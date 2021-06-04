@@ -879,7 +879,8 @@ Working on the docs
       If there is anything in the issue that doesn't make sense, ask about it.
       Feel free to make suggestions about how something could be accomplished.
    #. If you decide to work on an issue,
-      assign yourself to it by writing **@opendatakit-bot claim** in a comment.
+      let the community know you are working on it by asking to be *assigned* the issue.
+      Make sure you're actually going to work on it before asking to be assigned to it.
    #. If the issue requires a novel or creative solution not defined in the issue already
       (we've stated a problem and you think you know a way to fix it)
       write a comment describing your plan.
