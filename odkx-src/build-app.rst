@@ -50,9 +50,9 @@ Before getting started, be sure you have familiarized yourself with the ODK-X pl
 Cleaning App Designer
 -----------------------------------
 
-Your freshly installed copy of Application Designer comes with lots of example forms, tables, and configuration. This is useful for learning the tools and as references when building our application, but the files should be cleaned before building your own application.
+Your freshly installed copy of Application Designer comes with lots of example forms, tables, and configuration. This is useful for learning the tools and as references when building our application, the files can be found in :file:`app/config/tables` directory. 
 
-Enter your Application Designer directory, navigate to :file:`app/config/` and delete everything inside the directory.
+After building your own application, you may choose to delete all the examples forms and configurations before pushing your files to your device; as the files can be very large and take up a lot of space on the device.
 
 .. _build-app-designing-a-form:
 
@@ -66,19 +66,21 @@ When creating a new form, the appropriate directory structure must be created. O
 Creating the Directory Structure
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-New forms must be placed under the :file:`app/config/tables/` directory as described in the :ref:`app-designer-dirs-app-config-tables` section. Given a form with the name *formId*, it will have a *tableId* of the same name unless you explicitly specify otherwise. The directory structure that should be created is :file:`app/config/tables/tableId/forms/formId` (where, under many circumstances, the value for *tableId* will be the same as the value for *formId*). To get started, for Windows open a :program:`cmd` window within your :file:`Application Designer` folder (click the :program:`cmd` shortcut you created earlier), and for Mac/Unix open a :program:`terminal` window within your :file:`Application Designer` folder. Type:
+New forms must be placed under the :file:`app/config/tables/` directory as described in the :ref:`app-designer-dirs-app-config-tables` section. Given a form with the name *formId*, it will have a *tableId* of the same name unless you explicitly specify otherwise. The directory structure that should be created is :file:`app/config/tables/tableId/forms/formId` (where, under many circumstances, the value for *tableId* will be the same as the value for *formId*). 
 
-.. code-block:: console
+To get started: 
 
-  $ grunt addtable:tableId
+  1. Navigate to :file:`app/config/tables/` and create a folder with the tableId, where tableId is the name of your new form and table. For example, to create a census form; the folder would be named census.
 
-Where tableId is the name of your new form and table. For example, to create a census form, type:
+  2. In the census folder, create the following new folders:
+   
+    - :th:`forms`
+    - :th:`html`
+    - :th:`js`
+    - :th:`instances`
+    - :th:`collect-forms`
 
-.. code-block:: console
-
-  $ grunt addtable:census
-
-This will create the required directory structure for an individual table, including the forms directory. It also created basic HTML and JavaScript files, which will be covered later.
+This creates the required directory structure for an individual table, including the forms directory.
 
 Navigate into the forms directory (:file:`app/config/tables/census/forms/` in our example), and create a directory with the form ID as its name. For our example, create a :file:`app/config/tables/census/forms/census` directory. Within that directory, ODK-X Survey expects to find the :file:`formDef.json` that defines the form.
 
@@ -180,11 +182,13 @@ Creating :file:`framework.xlsx`
 
 The :file:`framework.xlsx` file is central to the structure of the Application Designer. It defines which forms exist. It has no persisted data. In this case, it only presents a list of forms and allows you to open them.
 
-  1. Create the following directories: :file:`config/assets/framework/forms/`.
+  1. Navigate to the following existing directories: :file:`config/assets/framework/forms/`. Inside that folder, there is a :file:`framework` and :file:`framework.clean` folder, as well as other folders that are not as important for this process.
 
-  2. Inside that folder, create :file:`framework.xlsx`
+  2. Delete the existing :file:`framework` folder. The :file:`framework.clean` folder contains a :file:`framework.xlsx` file, the file contains the boilerplate worksheet structure that you'll use to create a working :file:`framework.xlsx` file for your application.
+ 
+  3. Rename the :file:`framework.clean` folder to :file:`framework`
 
-  3. Create an *initial* worksheet. Add header: :th:`clause` and value :tc:`do section survey`.
+  4. The *initial* worksheet of :file:`framework.xlsx` should have a header: :th:`clause` and value :tc:`do section survey`.
 
     .. list-table:: *initial* worksheet
       :header-rows: 1
@@ -192,9 +196,9 @@ The :file:`framework.xlsx` file is central to the structure of the Application D
       * - clause
       * - do section survey
 
-  4. Create a *settings* worksheet. Add the same headers: :th:`setting_name`, :th:`value`, :th:`display.title.text`.
+  5. The *settings* worksheet should have the :th:`setting_name`, :th:`value`, :th:`display.title.text` headers.
 
-  5. Fill in the following rows:
+  6. The rows shoud look like the example below:
 
     .. list-table:: *settings* worksheet
       :header-rows: 1
@@ -206,7 +210,7 @@ The :file:`framework.xlsx` file is central to the structure of the Application D
         - framework
         -
       * - form_version
-        - 20180101
+        - 20210707
         -
       * - form_id
         - framework
@@ -215,11 +219,11 @@ The :file:`framework.xlsx` file is central to the structure of the Application D
         -
         - Common JavaScript Framework
 
-  6. Create a *framework_translations* sheet. This sheet allows you to translate or customize the text displayed in buttons, messages, and other system text. Translations for your form would be specified in its own *translations* sheet in its :file:`.xlsx` file. For now, copy the :th:`string_token` and :th:`text.default` columns from one of the example :file:`framework.xlsx` files provided with the default Application Designer.
+  7. Next, there is a *framework_translations* sheet. This sheet allows you to translate or customize the text displayed in buttons, messages, and other system text. Translations for your form would be specified in its own *translations* sheet in its :file:`.xlsx` file. This worksheet is already populated, you do not need to edit this worksheet.
 
-  7. Create a *choices* sheet. Add the same headers: :th:`choice_list_name`, :th:`data_value`, :th:`display.title.text`.
+  8. The *choices* sheet contains the following headers: :th:`choice_list_name`, :th:`data_value`, :th:`display.title.text`.
 
-  8. Add the following row:
+  9. Substitute the :th:`form_id_here` under the :th:`data_value` with the *form_id* and :th:`form_title_here` under the :th:`display.title.text` with the *form title*. The row should look like the table below:
 
     .. list-table:: *choices* worksheet
       :header-rows: 1
@@ -231,9 +235,9 @@ The :file:`framework.xlsx` file is central to the structure of the Application D
         - census
         - Census Form
 
-  9. Create a *survey* sheet. Add the headers: :th:`branch_label`, :th:`url`, :th:`clause`, :th:`condition`, :th:`type`, :th:`values_list`, :th:`display.prompt.text`.
+  10. In the *survey* worksheet. Check that these headers: :th:`branch_label`, :th:`url`, :th:`clause`, :th:`condition`, :th:`type`, :th:`values_list`, :th:`display.prompt.text` are present.
 
-  10. Add the following rows. They tell the software what to do if you're previewing in :program:`Chrome`.
+  11. Fill in the following rows. They tell the software what to do if you're previewing in :program:`Chrome`.
 
   .. note::
 
