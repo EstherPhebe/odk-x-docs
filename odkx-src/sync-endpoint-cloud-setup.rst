@@ -92,9 +92,9 @@ Setting up a Droplet
 Setting up a DNS Record
 """"""""""""""""""""""""
 
-1. From the DigitalOcean console, click on :guilabel:`Droplets` under the **MANAGE** section.
+1. On the resources tab of the main DigitalOcean page, click on the :guilabel:`Droplet` you created.
 
-  .. image:: /img/setup-digital-ocean/do2.png
+  .. image:: /img/setup-digital-ocean/do-droplets.png
    :width: 600
 
 2. Obtain the IP address of the droplet you created.
@@ -108,23 +108,20 @@ Setting up a DNS Record
 Connecting to your Droplet
 """""""""""""""""""""""""""""
 
-1. From the DigitalOcean console, click on :guilabel:`Droplets` under the **MANAGE** section.
+1. On the resources tab of the main DigitalOcean page, click on the :guilabel:`Droplet` you created.
 
-  .. image:: /img/setup-digital-ocean/do2.png
+  .. image:: /img/setup-digital-ocean/do-droplets.png
    :width: 600
 
-2. Now, select your droplet and click on the :guilabel:`Console` link in the upper-right.
+2. Now, click on the :guilabel:`Console` link in the upper-right corner of the page
 
-  .. image:: /img/setup-digital-ocean/do3.png
+  .. image:: /img/setup-digital-ocean/do-console.png
    :width: 600
 
-3. A console window will now open up. Enter your username and then you will be asked for a password. These credentials will be sent to the email associated with your DigitalOcean account. You will also be required to change the root password once you log in.
+3. A console window will now open up. If you chose the **password** authentication, you will be asked to enter your username and then asked for a password. 
 
-  .. note::
-    Occasionally, Control + V may not work to paste the password, so you may have to right click and select paste.
-
-  .. image:: /img/setup-digital-ocean/do4.png
-   :width: 600
+  .. image:: /img/setup-digital-ocean/do-console-terminal.png
+    :width: 600
 
 4. Before running our launch scripts, we need to check our logs to ensure that all the packages have been successfully installed, which should take about 2-3 minutes. The droplet may also reboot in this time.
 
@@ -193,9 +190,9 @@ Connecting to your Droplet
 Enabling a firewall to prevent unintended traffic
 """""""""""""""""""""""""""""""""""""""""""""""""""
 
-1. On the DigitalOcean console, navigate to the *Networking* section under **MANAGE** Go to the *Firewalls* section and click :guilabel:`Create Firewall`.
+1. On the DigitalOcean console, click on the arrow beside the **MANAGE** dropdown and navigate to the *Networking* section. Go to the *Firewalls* section and click :guilabel:`Create Firewall`.
 
-  .. image:: /img/setup-digital-ocean/do9.png
+  .. image:: /img/setup-digital-ocean/do-networking.png
    :width: 600
 
 2. Set a name for your firewall and modify the inbound rules to match the inbound rules specified in the picture below (SSH, HTTP, HTTPS and port for admin interface). Attach the firewall to the desired droplet. Leave the outbound rules as-is.
