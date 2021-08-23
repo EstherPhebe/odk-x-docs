@@ -237,7 +237,7 @@ The :file:`framework.xlsx` file is central to the structure of the Application D
 
   10. In the *survey* worksheet. Check that these headers: :th:`branch_label`, :th:`url`, :th:`clause`, :th:`condition`, :th:`type`, :th:`values_list`, :th:`display.prompt.text` are present.
 
-  11. Fill in the following rows. They tell the software what to do if you're previewing in :program:`Chrome`.
+  11. Update the following rows as shown below. This worksheet tells the software what to do if you're previewing in :program:`Chrome`.
 
   .. note::
 
@@ -438,17 +438,25 @@ Understanding the Web File
 
 There are several pieces of boilerplate you have to include in your own code in order to debug the files in :program:`Chrome`.
 
-In the default Application Designer, open :file:`app/config/tables/Tea_houses/html/Tea_houses_list.html`. Alternatively, if you are doing the running example, open :file:`app/config/tables/census/html/census_list.html`, which should have been automatically created for you. Notice the following four lines in :code:`<head>`:
+In the default Application Designer, navigate to  :file:`app/config/tables/SkipLogic/html` and open :file:`SkipLogic_list.html`. 
+
+.. Alternatively, if you are doing the running example, open :file:`app/config/tables/census/html/census_list.html`, which should have been automatically created for you. Notice the following four lines in :code:`<head>`:
 
 .. code-block:: html
 
-    <script type="text/javascript" src="../../../assets/libs/jquery-3.2.1.js"></script>
-    <script type="text/javascript" src="../../../../system/js/odkCommon.js"></script>
-    <script type="text/javascript" src="../../../../system/js/odkData.js"></script>
-    <script type="text/javascript" src="../../../../system/tables/js/odkTables.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="../../../assets/css/bootstrap-5.1.0/bootstrap.min.css" type="text/css" rel="stylesheet">
 
+    <!-- Load internationalization definitions -->
+    <script defer src="../../../assets/commonDefinitions.js"></script>
+    <script defer src="../tableSpecificDefinitions.js"></script>
 
-In the first line you are making the :program:`jQuery` object available to your code. :program:`jQuery` is a powerful, commonly used set of functions for accessing and performing actions within a webpage. In the next three lines you are adding the *odkCommon*, *odkTables*, and *odkData* objects if they are not already provided by the browser environment. When running on the device, the ODK-X Tables APK will provide these, and the contents of these files will be ignored. When running in Application Designer on your computer, these files provide the approximate functionality of the APK, allowing you to create and debug your scripts. However, at the moment, these implementations make use of RequireJS, which the ODK-X Tables HTML files do not use (RequireJS is extensively used by ODK-X Survey). This causes these to break in Application Designer **Previews**.
+    <!-- Load ODK-X libs -->
+    <script defer src="../../../../system/js/odkCommon.js"></script>
+    <script defer src="../../../../system/js/odkData.js"></script>
+    <script defer src="../../../../system/tables/js/odkTables.js"></script>
+
+In the first line you are making the :program:`Bootstrap` styles available to your code. :program:`Bootstrap` is a free and open-source CSS framework directed at responsive web development. In the next three lines you are adding the *odkCommon*, *odkTables*, and *odkData* objects if they are not already provided by the browser environment. When running on the device, the ODK-X Tables APK will provide these, and the contents of these files will be ignored. When running in Application Designer on your computer, these files provide the approximate functionality of the APK, allowing you to create and debug your scripts. However, at the moment, these implementations make use of RequireJS, which the ODK-X Tables HTML files do not use (RequireJS is extensively used by ODK-X Survey). This causes these to break in Application Designer **Previews**.
 
 More detail is provided in :doc:`tables-web-pages`.
 
@@ -457,15 +465,9 @@ More detail is provided in :doc:`tables-web-pages`.
 Creating Web Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To write your own file, first decide on the *tableId* for your table and instantiate a directory using the :program:`grunt` command:
-
-.. code-block:: console
-
-  $ grunt addtable:tableId
+To write your own file, first decide on the *tableId* for your table and create the directory structure as shown in :ref:`build-app-creating-directory`.
 
 If you completed the example in :ref:`build-app-designing-a-form` you have already done this for the *census* table.
-
-This :program:`grunt` task creates the needed directory structures and also constructs the HTML and JavaScript files with the necessary features for working within the :program:`Chrome` development environment.
 
 .. note::
 
