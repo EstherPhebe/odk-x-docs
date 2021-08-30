@@ -512,84 +512,57 @@ This HTML file should be minimal. It links all the source files and provides :co
 
 .. code-block:: javascript
 
-  /* global $, odkTables, odkData, odkCommon */
+  /* global odkTables, odkData */
+
   'use strict';
 
-  // The first function called on load
-  var resumeFn = function() {
+  (function () {
+    var openDetailViewOnClick = function (rowId) {
+      return function () {
+        odkTables.openDetailView(null, 'SkipLogic', rowId);
+      };
+    };
 
-      // Retrieves the query data from the database
-      // Sets displayGroup as the success callback
-      // and cbFailure as the fail callback
-	    odkData.getViewData(displayGroup, cbFailure);
-  }
+    var listViewCallbackSuccess = function (result) {
+      var resultCount = result.getCount();
 
-  // Display the list of census results
-  var displayGroup = function(censusResultSet) {
+      var template = document.getElementById('skipLogicListTemplate');
+      var listContainer = document.getElementById('skipLogicList');
 
-      // Set the function to call when a list item is clicked
-      $('#list').click(function(e) {
+      for (var i = 0; i < resultCount; i++) {
+        var listItem = document.importNode(template.content, true);
 
-          // Retrieve the row ID from the item_space attribute
-		      var jqueryObject = $(e.target);
-		      var containingDiv = jqueryObject.closest('.item_space');
-		      var rowId = containingDiv.attr('rowId');
+        listItem
+          .querySelector('.skip-logic-list-name')
+          .textContent = result.getData(i, 'name');
 
-          // Retrieve the tableID from the query results
-		      var tableId = censusResultSet.getTableId();
+        listItem
+          .querySelector('.skip-logic-list-order')
+          .textContent = result.getData(i, 'menu');
 
-		      if (rowId !== null && rowId !== undefined) {
+        listItem
+          .querySelector('.skip-logic-detail-view-link')
+          .addEventListener('click', openDetailViewOnClick(result.getRowId(i)));
 
-              // Opens the detail view from the file specified in
-              // the properties worksheet
-				      odkTables.openDetailView(null, tableId, rowId, null);
-			    }
-		  });
+        listContainer.appendChild(listItem);
+      }
+    };
 
-      // Iterate through the query results, rendering list items
-      for (var i = 0; i < censusResultSet.getCount(); i++) {
+    var listViewCallbackFailure = function (error) {
+      console.error(error);
+    };
 
-          // Creates the item space and stores the row ID in it
-          var item = $('<li>');
-          item.attr('id', censusResultSet.getRowId(i));
-          item.attr('rowId', censusResultSet.getRowId(i));
-          item.attr('class', 'item_space');
+    document.addEventListener('DOMContentLoaded', function () {
+      odkData.getViewData(listViewCallbackSuccess, listViewCallbackFailure);
 
-          // Display the census name
-          var name = censusResultSet.getData(i, 'name');
-          if (name === null || name === undefined) {
-              name = 'unknown name';
-          }
-          item.text(name);
-
-          // Creates arrow icon
-          var chevron = $('<img>');
-          chevron.attr('src', odkCommon.getFileAsUrl('config/assets/img/little_arrow.png'));
-          chevron.attr('class', 'chevron');
-          item.append(chevron);
-
-          // Add the item to the list
-          $('#list').append(item);
-
-          // Don't append the last one to avoid the fencepost problem
-          var borderDiv = $('<div>');
-          borderDiv.addClass('divider');
-          $('#list').append(borderDiv);
-        }
-        if (i < censusResultSet.getCount()) {
-            setTimeout(resumeFn, 0, i);
-        }
-  };
-
-  var cbFailure = function(error) {
-      console.log('census getViewData CB error : ' + error);
-  };
+      document.getElementById('wrapper').classList.remove('d-none');
+    });
 
 The HTML and JavaScript files also depend on a few more files. For convenience, the example reuses CSS and image files from the :doc:`tables-sample-app`. Open up a default Application Designer and copy the following files to this application's directory (using the same directory paths):
 
   - :file:`config/assets/css/list.css`
   - :file:`config/assets/img/little_arrow.png`
-  - :file:`config/assets/libs/jquery-3.2.1.js`
+  - :file:`config/assets/css/bootstrap-5.1.0/bootstrap.min.css`
 
 .. _build-app-creating-web-file-detail-view:
 
@@ -602,91 +575,93 @@ Open or create :file:`app/tables/census/html/census_detail.html` Ensure the file
 
 .. code-block:: html
 
-  <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-  <html>
-      <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <link href="../../../assets/css/detail.css" type="text/css" rel="stylesheet" />
-          <script type="text/javascript" src="../../../assets/commonDefinitions.js"></script>
-          <script type="text/javascript" src="../tableSpecificDefinitions.js"></script>
-          <script type="text/javascript" src="../../../assets/libs/jquery-3.2.1.js"></script>
-          <script type="text/javascript" src="../../../../system/js/odkCommon.js"></script>
-          <script type="text/javascript" src="../../../../system/js/odkData.js"></script>
-          <script type="text/javascript" src="../../../../system/tables/js/odkTables.js"></script>
-      </head>
-      <body>
-          <script type="text/javascript" src="../js/census_detail.js"></script>
+  <!doctype html>
+  <html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-          <h1><span id="TITLE" class="main-text"></span></h1>
+        <!-- Bootstrap CSS -->
+        <link href="../../../assets/css/bootstrap-5.1.0/bootstrap.min.css" type="text/css" rel="stylesheet">
 
-          <fieldset>
-            Is over 18: <input id="FIELD_1" type="checkbox" name="isAdult" />
-          </fieldset>
+        <!-- Load internationalization definitions -->
+        <script defer src="../../../assets/commonDefinitions.js"></script>
+        <script defer src="../tableSpecificDefinitions.js"></script>
 
-          <script>
-              $(display);  // calls the detail display function when ready
-          </script>
-      </body>
+        <!-- Load ODK-X libs -->
+        <script defer src="../../../../system/js/odkCommon.js"></script>
+        <script defer src="../../../../system/js/odkData.js"></script>
+        <script defer src="../../../../system/tables/js/odkTables.js"></script>
+
+        <!-- Load SkipLogic detail view lib -->
+        <script defer src="../js/SkipLogic_detail.js"></script>
+    </head>
+    <body>
+      <main id="wrapper" class="d-none my-3">
+          <div class="container-fluid">
+              <h1 class="text-center display-3">Skip Logic Detail View</h1>
+              <h2 class="text-center display-6 text-secondary">Order Detail</h2>
+
+              <div id="skipLogicDetailContainer" class="vstack gap-2 mx-4 mt-4"></div>
+          </div>
+      </main>
+
+    <template id="skipLogicDetailTemplate">
+        <div class="hstack gap-2 justify-content-between">
+            <span class="pe-4 fw-bold skip-logic-detail-label"></span>
+            <span class="d-inline-block text-end text-truncate fw-light skip-logic-detail-value"></span>
+        </div>
+    </template>
+
+  <!-- Bootstrap JS -->
+  <script src="../../../assets/js/bootstrap-5.1.0/bootstrap.bundle.min.js"></script>
+  </body>
   </html>
 
 This HTML file should define the user interface elements that will be populated by database calls in the JavaScript. Open or create :file:`app/tables/census/js/census_detail.js`. Ensure its contents look like this:
 
 .. code-block:: javascript
 
-  /* global $, odkTables, odkData */
   'use strict';
 
-  var censusResultSet = {};
-  var typeData = {};
+  (function () {
+    var detailViewFields = {
+      name: 'Name',
+      state: 'State',
+      menu: 'Order',
+      size: 'Size',
+      flavor: 'Flavor',
+      box: 'Quantity',
+    };
 
-  // Called when the page loads
-  var display = function() {
+    var detailViewCallbackSuccess = function (result) {
+      var template = document.getElementById('skipLogicDetailTemplate');
+      var fieldsContainer = document.getElementById('skipLogicDetailContainer');
 
-    // Runs the query that launched this view
-    odkData.getViewData(cbSuccess, cbFailure);
-  };
+      Object.entries(detailViewFields).forEach(function (entry) {
+        var fieldValue = result.get(entry[0]);
 
-  // Called when the query returns successfully
-  function cbSuccess(result) {
+        if (fieldValue !== undefined && fieldValue !== null) {
+          var detailField = document.importNode(template.content, true);
 
-    censusResultSet = result;
-    // and update the document with the values for this record
-    updateContent();
-  }
+          detailField.querySelector('.skip-logic-detail-label').textContent = entry[1];
+          detailField.querySelector('.skip-logic-detail-value').textContent = fieldValue;
 
-  function cbFailure(error) {
+          fieldsContainer.appendChild(detailField);
+        }
+      });
+    };
 
-    // a real application would perhaps clear the document fiels if there were an error
-    console.log('census_detail getViewData CB error : ' + error);
-  }
+    var detailViewCallbackFailure = function (error) {
+      console.error(error);
+    };
 
-  /**
-   * Assumes censusResultSet has valid content.
-   *
-   * Updates the document content with the information from the censusResultSet
-   */
-  function updateContent() {
+    document.addEventListener('DOMContentLoaded', function () {
+      odkData.getViewData(detailViewCallbackSuccess, detailViewCallbackFailure);
 
-    nullCaseHelper('name', '#TITLE');
-
-    if(censusResultSet.get('isAdult') === 'y') {
-      $('#FIELD_1').attr('checked', true);
-    }
-    $('#FIELD_1').attr('disabled', true);
-
-  }
-
-  /**
-   * Assumes censusResultSet has valid content
-   *
-   * Updates document field with the value for the elementKey
-   */
-  function nullCaseHelper(elementKey, documentSelector) {
-    var temp = censusResultSet.get(elementKey);
-    if (temp !== null && temp !== undefined) {
-      $(documentSelector).text(temp);
-    }
-  }
+      document.getElementById('wrapper').classList.remove('d-none');
+    });
+  })();
 
 As with the *List View*, this view requires a separate CSS file. Copy the following file from a default Application Designer, maintaining the directory path in this application's directory:
 
