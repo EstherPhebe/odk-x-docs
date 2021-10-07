@@ -438,7 +438,7 @@ Understanding the Web File
 
 There are several pieces of boilerplate you have to include in your own code in order to debug the files in :program:`Chrome`.
 
-In the default Application Designer, navigate to  :file:`app/config/tables/SkipLogic/html` and open :file:`SkipLogic_list.html`. 
+In the default Application Designer, navigate to  :file:`app/config/tables/SkipLogic/html` and open :file:`SkipLogic_list.html`. Notice the following lines in :file:`<head>`
 
 .. Alternatively, if you are doing the running example, open :file:`app/config/tables/census/html/census_list.html`, which should have been automatically created for you. Notice the following four lines in :code:`<head>`:
 
@@ -465,9 +465,9 @@ More detail is provided in :doc:`tables-web-pages`.
 Creating Web Files
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To write your own file, first decide on the *tableId* for your table and create the directory structure as shown in :ref:`build-app-creating-directory`.
+To write your own file, first decide on the *tableId* for your table and create the directory structure as shown in :ref:`build-app-creating-directory`. If you completed the example in :ref:`build-app-designing-a-form` you have already done this for the *census* survey form.
 
-If you completed the example in :ref:`build-app-designing-a-form` you have already done this for the *census* table.
+For this section we would be looking at the example List and Detail view of the `Skip Logic <https://github.com/odk-x/app-designer/tree/basic-tables-example/app/config/tables/SkipLogic>`_ survey form.
 
 .. note::
 
@@ -478,37 +478,59 @@ If you completed the example in :ref:`build-app-designing-a-form` you have alrea
 Creating a List View
 """"""""""""""""""""""""""
 
-Continuing the ongoing example, open or create the file :file:`app/tables/census/html/census_list.html`. This will display a list of records collected with the form.
+Open or create the file :file:`app/config/tables/SkipLogic/html/SkipLogic_list.html`. This will display a list of data collected with the Skip Logic form.
 
-Ensure the file looks like this:
+The file looks like this:
 
 .. code-block:: html
 
-  <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-  <html>
-  <!--List View-->
-      <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <link href="../../../assets/css/list.css" type="text/css" rel="stylesheet" />
-          <script type="text/javascript" src="../../../assets/commonDefinitions.js"></script>
-          <script type="text/javascript" src="../tableSpecificDefinitions.js"></script>
-          <script type="text/javascript" src="../../../assets/libs/jquery-3.2.1.js"></script>
-          <script type="text/javascript" src="../../../../system/js/odkCommon.js"></script>
-          <script type="text/javascript" src="../../../../system/js/odkData.js"></script>
-          <script type="text/javascript" src="../../../../system/tables/js/odkTables.js"></script>
-      </head>
-      <body>
-          <script type="text/javascript" src="../js/census_list.js"></script>
-          <div id="wrapper">
-              <div id="list"></div>
-          </div>
-          <script>
-              $(function() { resumeFn(0); });
-          </script>
-      </body>
-  </html>
+      <!doctype html>
+        <html lang="en">
+          <head>
+              <meta charset="utf-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1">
 
-This HTML file should be minimal. It links all the source files and provides :code:`<div>` to put the list in. Most of the work happens in the JavaScript file. Open or create :file:`app/tables/census/js/census_list.js`. Ensure its contents look like this:
+              <!-- Bootstrap CSS -->
+              <link href="../../../assets/css/bootstrap-5.1.0/bootstrap.min.css" type="text/css" rel="stylesheet">
+
+              <!-- Load internationalization definitions -->
+              <script defer src="../../../assets/commonDefinitions.js"></script>
+              <script defer src="../tableSpecificDefinitions.js"></script>
+
+              <!-- Load ODK-X libs -->
+              <script defer src="../../../../system/js/odkCommon.js"></script>
+              <script defer src="../../../../system/js/odkData.js"></script>
+              <script defer src="../../../../system/tables/js/odkTables.js"></script>
+
+              <!-- Load SkipLogic list view lib -->
+              <script defer src="../js/SkipLogic_list.js"></script>
+          </head>
+          <body>
+          <main id="wrapper" class="d-none my-3">
+              <div class="container-fluid">
+                  <h1 class="text-center display-3">Skip Logic List View</h1>
+
+                  <div id="skipLogicList" class="vstack gap-2"></div>
+              </div>
+          </main>
+
+          <template id="skipLogicListTemplate">
+              <div class="card">
+                  <div class="card-body">
+                      <p class="skip-logic-list-name"></p>
+                      <p class="skip-logic-list-order"></p>
+
+                      <a href="#" class="btn btn-primary stretched-link skip-logic-detail-view-link">Detail View</a>
+                  </div>
+              </div>
+          </template>
+
+          <!-- Bootstrap JS -->
+          <script src="../../../assets/js/bootstrap-5.1.0/bootstrap.bundle.min.js"></script>
+          </body>
+        </html>
+
+This HTML file should be minimal. It links all the source files and provides :code:`<div>` to put the list in. Most of the work happens in the JavaScript file. Open the :file:`app/config/tables/SkipLogic/js/SkipLogic_list.js` file. Its contents should look like this:
 
 .. code-block:: javascript
 
@@ -557,12 +579,14 @@ This HTML file should be minimal. It links all the source files and provides :co
 
       document.getElementById('wrapper').classList.remove('d-none');
     });
+  })();
 
 The HTML and JavaScript files also depend on a few more files. For convenience, the example reuses CSS and image files from the :doc:`tables-sample-app`. Open up a default Application Designer and copy the following files to this application's directory (using the same directory paths):
 
   - :file:`config/assets/css/list.css`
   - :file:`config/assets/img/little_arrow.png`
   - :file:`config/assets/css/bootstrap-5.1.0/bootstrap.min.css`
+  - :file:`config/assets/js/bootstrap-5.1.0/bootstrap.bundle.min.js`
 
 .. _build-app-creating-web-file-detail-view:
 
@@ -571,7 +595,7 @@ Creating a Detail View
 
 A *Detail View* will display the details of a record. It is commonly used alongside *List View* to provide options to browse through a data set and learn more about a particular record.
 
-Open or create :file:`app/tables/census/html/census_detail.html` Ensure the file looks like this:
+Open or create :file:`app/config/tables/SkipLogic/html/SkipLogic_detail.html`. Ensure the file looks like this:
 
 .. code-block:: html
 
@@ -618,7 +642,7 @@ Open or create :file:`app/tables/census/html/census_detail.html` Ensure the file
   </body>
   </html>
 
-This HTML file should define the user interface elements that will be populated by database calls in the JavaScript. Open or create :file:`app/tables/census/js/census_detail.js`. Ensure its contents look like this:
+This HTML file should define the user interface elements that will be populated by database calls in the JavaScript. Open or create :file:`app/config/tables/SkipLogic/js/SkipLogic_detail.js`. Ensure its contents look like this:
 
 .. code-block:: javascript
 
@@ -673,7 +697,7 @@ As with the *List View*, this view requires a separate CSS file. Copy the follow
 Defining Default View Files
 """"""""""""""""""""""""""""
 
-The :file:`.xlsx` form should be updated to indicate the default view type, and where to find the HTML files for *Detail View* and *List View*. Open :file:`app/config/tables/census/forms/census/census.xlsx` and add a new worksheet titled *properties*. Add the following headers: :th:`partition`, :th:`aspect`, :th:`key`, :th:`type`, and :th:`value`.
+The :file:`.xlsx` form should be updated to indicate the default view type, and where to find the HTML files for *Detail View* and *List View*. Open :file:`app/config/tables/SkipLogic/forms/SkipLogic/SkipLogic.xlsx` and add a new worksheet titled *properties*. The worksheet has the following headers: :th:`partition`, :th:`aspect`, :th:`key`, :th:`type`, and :th:`value`.
 
 Add the following rows to set your *List View* and *Detail View* default files:
 
@@ -694,18 +718,18 @@ Add the following rows to set your *List View* and *Detail View* default files:
     - default
     - detailViewFileName
     - string
-    - config/tables/census/html/census_detail.html
+    - config/tables/SkipLogic/html/SkipLogic_detail.html
   * - Table
     - default
     - listViewFileName
     - string
-    - config/tables/census/html/census_list.html
+    - config/tables/SkipLogic/html/SkipLogic_list.html
 
-See :ref:`xlsx-ref-properties` for more details about specifying custom HTML files.
+Follow the example above to create your tables *properties* worksheet. See :ref:`xlsx-ref-properties` for more details about specifying custom HTML files.
 
-Run :file:`census.xlsx` through the XLSX Converter again (:ref:`build-app-generate-formdef`) to update the configuration.
+The :file:`.xlsx` should be run through the XLSX Converter again (:ref:`build-app-generate-formdef`) to update the configuration.
 
-After that, you can deploy your app to your device. Open Survey and fill in a few census records. Then, open Tables and select the *Census* table. This should automatically launch the *List View* defined above. Tapping an item in the *List View* should launch the detail view.
+After that, you can deploy your app to your device. Open Survey and fill in a few Skip Logic records. Then, open Tables and select the *Skip Logic* table. This should automatically launch the *List View* defined above. Tapping an item in the *List View* should launch the detail view.
 
 .. _build-app-debugging-tables:
 
